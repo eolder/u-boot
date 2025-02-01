@@ -1,4 +1,3 @@
-/* SPDX-License-Identifier: GPL-2.0+ */
 /*
  * A lowlevel_init function that sets up the stack to call a C function to
  * perform further init.
@@ -8,12 +7,13 @@
  *
  * Author :
  *	Aneesh V	<aneesh@ti.com>
+ *
+ * SPDX-License-Identifier:	GPL-2.0+
  */
 
 #include <asm-offsets.h>
 #include <config.h>
 #include <linux/linkage.h>
-#include <system-constants.h>
 
 .pushsection .text.s_init, "ax"
 WEAK(s_init)
@@ -26,10 +26,10 @@ WEAK(lowlevel_init)
 	/*
 	 * Setup a temporary stack. Global data is not available yet.
 	 */
-#if defined(CONFIG_XPL_BUILD) && defined(CONFIG_SPL_STACK)
+#if defined(CONFIG_SPL_BUILD) && defined(CONFIG_SPL_STACK)
 	ldr	sp, =CONFIG_SPL_STACK
 #else
-	ldr	sp, =SYS_INIT_SP_ADDR
+	ldr	sp, =CONFIG_SYS_INIT_SP_ADDR
 #endif
 	bic	sp, sp, #7 /* 8-byte alignment for ABI compliance */
 #ifdef CONFIG_SPL_DM
@@ -39,7 +39,7 @@ WEAK(lowlevel_init)
 	 * Set up global data for boards that still need it. This will be
 	 * removed soon.
 	 */
-#ifdef CONFIG_XPL_BUILD
+#ifdef CONFIG_SPL_BUILD
 	ldr	r9, =gdata
 #else
 	sub	sp, sp, #GD_SIZE
